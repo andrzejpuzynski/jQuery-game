@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>jQuery game</title>
+    <style>
+        .cell {
+            width: 10px;
+            height:10px;
+            border: 1px solid black;
+        }
 
+    </style>
 </head>
 <body>
 
@@ -21,8 +28,9 @@ var $td;
 
         for (var i = 0; i < 10; i++) {
            $td = $('<td>');
+           $td.addClass('cell');
            $tr.append($td);
-        };
+        }
 
     $table.append($tr);
 
