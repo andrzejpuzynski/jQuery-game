@@ -13,7 +13,6 @@
         .active-cell {
             background: red;
         }
-
     </style>
 </head>
 <body>
@@ -27,21 +26,28 @@ var $table = $('<table>');
 var $tr = $('<tr>');
 var $td;
 
+function handleClick() {
+    $(this).toggleClass('active-cell');
+};
+
+$table.on('click', 'td', handleClick);
+
+//$table.on('click', 'td', function() {
+//    $(this).toggleClass('active-cell');
+//});
+
     for (var j = 0; j < 10; j++) {
         $tr = $('<tr>');
 
         for (var i = 0; i < 10; i++) {
            $td = $('<td>');
-           $td.addClass('cell').on('click', function() {
-               $(this).toggleClass('active-cell');
-           });
            $tr.append($td);
         }
 
     $table.append($tr);
 
     }
-
+    $('td', $table).addClass('cell');
     $app.append($table);
 
     console.log($app);
