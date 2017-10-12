@@ -32,25 +32,25 @@ function handleClick() {
 
 $table.on('click', 'td', handleClick);
 
-//$table.on('click', 'td', function() {
-//    $(this).toggleClass('active-cell');
-//});
+function createTable(width, height) {
 
-    for (var j = 0; j < 10; j++) {
+    for (var j = 0; j < height; j++) {
         $tr = $('<tr>');
 
-        for (var i = 0; i < 10; i++) {
-           $td = $('<td>');
-           $tr.append($td);
+        for (var i = 0; i < width; i++) {
+            $td = $('<td>');
+            $tr.append($td);
         }
 
-    $table.append($tr);
-
+        $table.append($tr);
     }
-    $('td', $table).addClass('cell');
-    $app.append($table);
+}
 
-    console.log($app);
+createTable(10, 10);
+
+$('td', $table).addClass('cell');
+
+$app.append($table);
 
 
 </script>
