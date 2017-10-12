@@ -10,6 +10,10 @@
             border: 1px solid black;
         }
 
+        .active-cell {
+            background: red;
+        }
+
     </style>
 </head>
 <body>
@@ -28,7 +32,9 @@ var $td;
 
         for (var i = 0; i < 10; i++) {
            $td = $('<td>');
-           $td.addClass('cell');
+           $td.addClass('cell').on('click', function() {
+               $(this).toggleClass('active-cell');
+           });
            $tr.append($td);
         }
 
