@@ -12,16 +12,30 @@
 
         .party {
             background: blue;
+            color: white;
+            text-align: center;
         }
 
         .snake {
             background: yellow;
         }
 
+        .friends {
+            background: lightblue;
+        }
+
+        .aliens {
+            background: black;
+        }
+
         .head {
             background: red;
             background-image: url('https://cdn4.iconfinder.com/data/icons/penguin/154/penguin-baby-small-animal-512.png');
             background-size: 16px 16px;
+        }
+
+        .pink {
+            background: pink;
         }
 
 
@@ -37,7 +51,6 @@
         var $table = $('<table>');
         var $tr = $('<tr>');
         var $td;
-        var clubs
 
         function createTable(width, height) {
             for (var j = 0; j < height; j++) {
@@ -50,27 +63,52 @@
             }
         }
 
-        createTable(20, 20);
+        createTable(20, 20); // drawing board ---------
         $('td', $table).addClass('cell');
         $board.append($table);
 
-        var snakeCells = $('td').slice(0, 2).toArray(); //snake length
-        $(snakeCells).addClass('snake');
+        var aliens = 3; // snake chcaracter ---------
+        var friends = 3;
+        var snakeLength =  1 + friends + aliens;
 
+        var snakeCells = $('td').slice(0, snakeLength).toArray(); //snake length
+        $(snakeCells).addClass('snake');
+        $(snakeCells[snakeCells.length-1]).addClass('head');
+
+        function drawSnake() {
+            for (var i = 0; i < aliens; i++) {
+                $(snakeCells[i]).addClass('aliens');
+            }
+            for (var j = aliens; j < aliens + friends; j++) {
+                $(snakeCells[j]).addClass('friends');
+            }
+        }
+
+        drawSnake(); // drawing snake ---------
 
         function drawParty(x, y, n) {
             for (var i = x; i < x + 3; i++) {
                 for (var j = y; j < y + 3; j++) {
-                    $('table tr:nth-child(' + i + ') td:nth-child(' + j + ')').addClass('party party' + n)
+                    $('table tr:nth-child(' + i + ') td:nth-child(' + j + ')').addClass('party party' + n);
                 }
             }
             return $('.party' + n);
         }
 
-        $partyOne = drawParty(5, 5, 1);
+        $partyOne = drawParty(5, 5, 1); // drawing party places  ---------
         $partyTwo = drawParty(5, 14, 2);
         $partyThree = drawParty(14, 1, 3);
         $partyFour = drawParty(14, 14, 4);
+
+        var partyOneFriends = Math.round(Math.random(0,1)*2 + 2); // generating Friends in party places
+        var partyTwoFriends = Math.round(Math.random(0,1)*3 + 2);
+        var partyThreeFriends = Math.round(Math.random(0,1)*2+ 2);
+        var partyFourFriends = Math.round(Math.random(0,1)*4 +2);
+
+        $('.party1').slice(0,1).text(partyOneFriends); // generating number of Friends in party places
+        $('.party2').slice(0,1).text(partyTwoFriends);
+        $('.party3').slice(0,1).text(partyThreeFriends);
+        $('.party4').slice(0,1).text(partyFourFriends);
 
         var moves = {
             38: function up($node) {
@@ -94,34 +132,36 @@
 
         var direction = moves[40];
 
-        function checkInParty(n){
-            return !!$( '.snake.head.party' + n).length;
+
+        function checkInParty(n){  //anyParty
+            return !!$( '.snake.party' + n).length && !$('.snake.head.party' + n).length;
         }
+
         var interval = setInterval(function () {
 
             var tail = snakeCells[0];
             var head = snakeCells[snakeCells.length - 1];
-
-            $(head).removeClass('head');
-
             var $nextHead = direction($(head));
-
+//
+//            if( checkInParty(1) || checkInParty(2) || checkInParty(3) || checkInParty(4)){  //anyParty
+////                clearInterval(interval);
+//                if (partyThreeFriends > 0) {
+//                    partyThreeFriends -= 1;
+//                    $('.party3').slice(0,1).text(partyThreeFriends);  //Three party
+//                 } else {
+//
+//                }
+//            }
+//
+            $(snakeCells).removeClass('head friends aliens');
             $(tail).removeClass('snake');
             snakeCells = snakeCells.slice(1);
-
-
             snakeCells = snakeCells.concat($nextHead.get(0));
             $nextHead.addClass('head snake');
+            drawSnake();
 
-            if( checkInParty(1) || checkInParty(2) || checkInParty(3) || checkInParty(4)){
-                clearInterval(interval);
-                alert('Party');
-            }
 
-            // console.log('Czy jest w party 1: ', checkInParty(1) );
-            // console.log('Czy jest w party 2: ', checkInParty(2) );
-            // console.log('Czy jest w party 3: ', checkInParty(3) );
-            // console.log('Czy jest w party 4: ', checkInParty(4) );
+
 
         }, 500)
 
