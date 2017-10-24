@@ -67,8 +67,8 @@
         $('td', $table).addClass('cell');
         $board.append($table);
 
-        var aliens = 3; // snake chcaracter ---------
-        var friends = 3;
+        var aliens = 1; // snake chcaracter ---------
+        var friends = 1;
         var snakeLength =  1 + friends + aliens;
 
         var snakeCells = $('td').slice(0, snakeLength).toArray(); //snake length
@@ -97,18 +97,18 @@
 
         $partyOne = drawParty(5, 5, 1); // drawing party places  ---------
         $partyTwo = drawParty(5, 14, 2);
-        $partyThree = drawParty(14, 1, 3);
+        $partyThree = drawParty(14, 5, 3);
         $partyFour = drawParty(14, 14, 4);
 
-        var partyOneFriends = Math.round(Math.random(0,1)*2 + 2); // generating Friends in party places
-        var partyTwoFriends = Math.round(Math.random(0,1)*3 + 2);
-        var partyThreeFriends = Math.round(Math.random(0,1)*2+ 2);
-        var partyFourFriends = Math.round(Math.random(0,1)*4 +2);
+        var partyFriends1 = Math.round(Math.random(0,1)*2 + 1); // generating Friends in party places
+        var partyFriends2 = Math.round(Math.random(0,1)*3 + 1);
+        var partyFriends3 = Math.round(Math.random(0,1)*2+ 1);
+        var partyFriends4 = Math.round(Math.random(0,1)*4 +1);
 
-        $('.party1').slice(0,1).text(partyOneFriends); // generating number of Friends in party places
-        $('.party2').slice(0,1).text(partyTwoFriends);
-        $('.party3').slice(0,1).text(partyThreeFriends);
-        $('.party4').slice(0,1).text(partyFourFriends);
+        $('.party1').slice(0,1).text(partyFriends1); // generating number of Friends in party places
+        $('.party2').slice(0,1).text(partyFriends2);
+        $('.party3').slice(0,1).text(partyFriends3);
+        $('.party4').slice(0,1).text(partyFriends4);
 
         var moves = {
             38: function up($node) {
@@ -133,7 +133,19 @@
         var direction = moves[40];
 
 
-        function checkInParty(n){  //anyParty
+        $(window).on('keydown', function (event) {  // change direction
+
+            var code = event.keyCode
+
+            if (code === direction.invalid) {
+                return
+            }
+
+            direction = moves[event.keyCode] || direction
+        });
+
+
+        function exitParty(n){  //anyParty
             return !!$( '.snake.party' + n).length && !$('.snake.head.party' + n).length;
         }
 
@@ -142,28 +154,48 @@
             var tail = snakeCells[0];
             var head = snakeCells[snakeCells.length - 1];
             var $nextHead = direction($(head));
-//
-//            if( checkInParty(1) || checkInParty(2) || checkInParty(3) || checkInParty(4)){  //anyParty
-////                clearInterval(interval);
-//                if (partyThreeFriends > 0) {
-//                    partyThreeFriends -= 1;
-//                    $('.party3').slice(0,1).text(partyThreeFriends);  //Three party
-//                 } else {
-//
-//                }
-//            }
-//
-            $(snakeCells).removeClass('head friends aliens');
-            $(tail).removeClass('snake');
-            snakeCells = snakeCells.slice(1);
+
+            if(exitParty(1) &&partyFriends1 > 0) {
+                partyFriends1 -= 1;
+                $('.party1').slice(0, 1).text(partyFriends1);
+                $(snakeCells).removeClass('head friends aliens');
+                friends +=1;
+
+            } else if (exitParty(2) &&partyFriends2 > 0) {
+                partyFriends2 -= 1;
+                $('.party2').slice(0, 1).text(partyFriends2);
+                $(snakeCells).removeClass('head friends aliens');
+                friends +=1;
+
+            } else if (exitParty(3) &&partyFriends3 > 0) {
+                partyFriends3 -= 1;
+                $('.party3').slice(0, 1).text(partyFriends3);
+                $(snakeCells).removeClass('head friends aliens');
+                friends +=1;
+
+            } else if (exitParty(4) &&partyFriends4 > 0) {
+                partyFriends4 -= 1;
+                $('.party4').slice(0, 1).text(partyFriends4);
+                $(snakeCells).removeClass('head friends aliens');
+                friends += 1;
+            } else {
+                $(snakeCells).removeClass('head friends aliens');
+                $(tail).removeClass('snake');
+                snakeCells = snakeCells.slice(1);
+            }
+
+
+//            $(snakeCells).removeClass('head friends aliens');
+//            $(tail).removeClass('snake');
+//            snakeCells = snakeCells.slice(1);
             snakeCells = snakeCells.concat($nextHead.get(0));
             $nextHead.addClass('head snake');
             drawSnake();
 
 
 
-
-        }, 500)
+//                clearInterval(interval);
+        }, 400)
 
 
 </script>
