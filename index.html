@@ -50,9 +50,9 @@
 
 <h2>Zasady gry</h2>
 <p></p>
-<p>Miejscem gry jest imprezowa dzielnica miasta. Przyszedłeś tu aby bawić się ze swoimi przyjaciółmi, jednak pojawiłeś się jako ostatni.
-    Twoim zadaniem jest odwiedzić wszystkie miejsca imprez i zabrać z każdego swoich przyjaciół. Kiedy zbierzesz ich wszystkich, zabierasz ich na imprezę specjalną.
-    Utrudnieniem jest fakt, że jako wyjątkowo towarzyska osoba przyciągasz przypadkowych imprezowiczów, który koniecznie chcą do Ciebie dołączyć. Każda napotkana osoba dołącza do Ciebie i już nie idziesz sam. Przypadkowych imprezowiczów możesz zaprowadzić do dowolnego miejsca imprezy i tam pozostawić pod warunkiem, że w lokalu jest wolne miejsce. Wygrywasz, jeśli na imprezę specjalną dotrzesz tylko ze swoimi przyjaciółmi.
+<p>Dzięki Wyszukiwarce Najlepszych Imprez W Mieście udało Ci się znaleźć najlepszą imprezę tego wieczoru i nabyłeś ostatnie bilety dla siebie i swoich przyjaciół.
+    Wchodzisz do imprezowej dzielnicy miasta. Twoim zadaniem jest odwiedzić wszystkie miejsca imprez, zabrać stamtąd swoich przyjaciół i udać się z nimi na Najlepszą Imprezę W Mieście.
+    Jako wyjątkowo towarzyska osoba przyciągasz jednak przypadkowych imprezowiczów, którzy koniecznie chcą do Ciebie dołączyć. Każda napotkana osoba dołącza do Ciebie i Twoich przyjaciół. Przypadkowych imprezowiczów możesz zaprowadzić do dowolnego miejsca imprezy i tam pozostawić pod warunkiem, że w lokalu jest wolne miejsce. Wygrywasz, jeśli na imprezę specjalną dotrzesz tylko ze swoimi przyjaciółmi.
 </p>
 <table style="border: 1px solid grey; border-spacing: 5px">
     <tr>
@@ -77,7 +77,11 @@
     </tr>
     <tr>
         <td class="party">2</td>
-        <td>Liczba przyjaciół w miejscu imprezy</td>
+        <td>Liczba przyjaciół (na górze) w lokalu.</td>
+    </tr>
+    <tr>
+        <td class="party">2</td>
+        <td>Liczba wolnych miejsc (na dole) w lokalu.</td>
     </tr>
 </table>
 
@@ -105,7 +109,7 @@
         $board.append($table);
 
         var aliens = 0; // snake chcaracter ---------
-        var friends = 1;
+        var friends = 0;
         var snakeLength =  1 + friends + aliens;
 
         var snakeCells = $('td').slice(0, snakeLength).toArray(); //snake length
@@ -183,7 +187,7 @@
                 }
             }
             $enter = $('.enter').not('.freeAlien').not('.snake');
-        }, 200);
+        }, 400);
 
 
         var interval = setInterval(function () { //move Free Aliens
@@ -192,7 +196,6 @@
                 freeAliens[i].removeClass('freeAlien');
                 nextStep.addClass('freeAlien');
                 freeAliens[i] = nextStep;
-//                console.log(freeAliens[i]);
             };
         }, 600);
 
@@ -234,15 +237,19 @@
 
 
         function exitParty(n){  //detect exit head snake from Party
-            return !!$( '.snake.party' + n).length && !$('.snake.head.party' + n).length;
+            return !!$( '.snake.party' + n).length && $('.snake.head.party' + n).length !== 0;
         }
 
         function lostOfAliens(n){  //detect exit friends and head snake from Party
             return !!$( '.snake.party' + n).length && !$('.snake.friends.party' + n).length && !$('.snake.head.party' + n).length;
         }
 
-        var interval = setInterval(function () {
+        function meetFreeAlien() {  //detect meeting with FreeAlien
+            return $('.snake.freeAlien').length > 0 || $('.head.freeAlien').length > 0
+        }
 
+
+        var interval = setInterval(function () {
             var tail = snakeCells[0];
             var head = snakeCells[snakeCells.length - 1];
             var $nextHead = direction($(head));
@@ -303,6 +310,12 @@
                 $(snakeCells).removeClass('friends aliens');
                 $(tail).removeClass('snake');
                 snakeCells = snakeCells.slice(1);
+            } else if (meetFreeAlien()) {
+                aliens += 1;
+                $(snakeCells).removeClass('head friends aliens');
+                snakeCells = snakeCells.concat($nextHead.get(0));
+                $nextHead.addClass('head snake');
+
             } else {
                 $(snakeCells).removeClass('head friends aliens');
                 $(tail).removeClass('snake');
@@ -310,10 +323,9 @@
                 snakeCells = snakeCells.concat($nextHead.get(0));
                 $nextHead.addClass('head snake');
             }
-
             drawSnake();
 
-        }, 400)
+        }, 600)
 
 
 </script>
