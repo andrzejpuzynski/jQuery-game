@@ -34,10 +34,13 @@
             background-size: 16px 16px;
         }
 
-        .pink {
-            background: pink;
+        .enter {
+            /*background: pink;*/
         }
 
+        .freeAlien {
+            background: black;
+        }
 
     </style>
 </head>
@@ -101,7 +104,7 @@
         $('td', $table).addClass('cell');
         $board.append($table);
 
-        var aliens = 5; // snake chcaracter ---------
+        var aliens = 0; // snake chcaracter ---------
         var friends = 1;
         var snakeLength =  1 + friends + aliens;
 
@@ -156,6 +159,43 @@
         }
 
         var freePlaces = addFreePlaces(4);
+
+
+        $('tr td:nth-child(1)', $table).addClass('enter'); //Enter Free Aliens
+        $('tr td:nth-child(20)', $table).addClass('enter');
+        $('tr:nth-child(1) td', $table).addClass('enter');
+        $('tr:nth-child(20) td', $table).addClass('enter');
+        var $enter = $('.enter');
+        var freeAliens = [];
+        var nextStepFreeAliens = [];
+
+
+        var interval = setInterval(function () {  //generate Enter Free Aliens
+            freeAliens.push($enter.eq(Math.floor(Math.random() * $enter.length)).addClass('freeAlien'));
+
+            for (var i = 37; i < 41; i++) { //generate first direction of Free Alien
+                if (moves[i](freeAliens[freeAliens.length-1]).length === 0) {
+                    if (i < 39) {
+                        nextStepFreeAliens.push(i+2);
+                    } else {
+                        nextStepFreeAliens.push(i-2);
+                    }
+                }
+            }
+            $enter = $('.enter').not('.freeAlien').not('.snake');
+        }, 200);
+
+
+        var interval = setInterval(function () { //move Free Aliens
+            for (var i = 0; i < freeAliens.length-1; i++) {
+                var nextStep = moves[nextStepFreeAliens[i]](freeAliens[i]);
+                freeAliens[i].removeClass('freeAlien');
+                nextStep.addClass('freeAlien');
+                freeAliens[i] = nextStep;
+//                console.log(freeAliens[i]);
+            };
+        }, 600);
+
 
 
         var moves = {
@@ -273,7 +313,6 @@
 
             drawSnake();
 
-//                clearInterval(interval);
         }, 400)
 
 
