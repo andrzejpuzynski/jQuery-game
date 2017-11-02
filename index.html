@@ -148,17 +148,7 @@
                 }
             }
             $enter = $('.enter').not('.freeAlien').not('.snake');
-        }, 500);
-
-
-        var interval = setInterval(function () { //move Free Aliens
-            for (var i = 0; i < freeAliens.length-1; i++) {
-                var nextStep = moves[nextStepFreeAliens[i]](freeAliens[i]);
-                freeAliens[i].removeClass('freeAlien');
-                nextStep.addClass('freeAlien');
-                freeAliens[i] = nextStep;
-            };
-        }, 600);
+        }, 800);
 
 
         var moves = {
@@ -206,62 +196,29 @@
                 return;
             }
 
-            if (iCanTakeFriendFromParty(1)) { // reducing number friends in party Place
-                partyFriends[0] -= 1;
-                $('.party1').slice(0, 1).text(partyFriends[0]);
-                friends += 1;
-                $(snakeCells).removeClass('head friends aliens');
-                snakeCells = snakeCells.concat($nextHead.get(0));
-                $nextHead.addClass('head snake');
-            } else if (iCanLeaveAnAlienInParty(1)) { // reducing number free places in party Place
-                freePlaces[0] -= 1;
-                $('.party1').slice(8).text(freePlaces[0]);
-                aliens -= 1;
-                $(snakeCells).removeClass('friends aliens');
-                $(tail).removeClass('snake');
-                snakeCells = snakeCells.slice(1);
-            } else if (iCanTakeFriendFromParty(2)) { // reducing number friends in party Place
-                partyFriends[1] -= 1;
-                $('.party2').slice(0, 1).text(partyFriends[1]);
-                friends += 1;
-                $(snakeCells).removeClass('head friends aliens');
-                snakeCells = snakeCells.concat($nextHead.get(0));
-                $nextHead.addClass('head snake');
-            } else if (iCanLeaveAnAlienInParty(2)) { // reducing number free places in party Place
-                freePlaces[1] -= 1;
-                $('.party2').slice(8).text(freePlaces[1]);
-                aliens -= 1;
-                $(snakeCells).removeClass('friends aliens');
-                $(tail).removeClass('snake');
-                snakeCells = snakeCells.slice(1);
-            } else if (iCanTakeFriendFromParty(3)) { // reducing number friends in party Place
-                partyFriends[2] -= 1;
-                $('.party3').slice(0, 1).text(partyFriends[2]);
-                friends += 1;
-                $(snakeCells).removeClass('head friends aliens');
-                snakeCells = snakeCells.concat($nextHead.get(0));
-                $nextHead.addClass('head snake');
-            } else if (iCanLeaveAnAlienInParty(3)) { // reducing number free places in party Place
-                freePlaces[2] -= 1;
-                $('.party3').slice(8).text(freePlaces[2]);
-                aliens -= 1;
-                $(snakeCells).removeClass('friends aliens');
-                $(tail).removeClass('snake');
-                snakeCells = snakeCells.slice(1);
-            } else if (iCanTakeFriendFromParty(4)) { // reducing number friends in party Place
-                partyFriends[3] -= 1;
-                $('.party4').slice(0, 1).text(partyFriends[3]);
-                friends += 1;
-                $(snakeCells).removeClass('head friends aliens');
-                snakeCells = snakeCells.concat($nextHead.get(0));
-                $nextHead.addClass('head snake');
-            } else if (iCanLeaveAnAlienInParty(4)) { // reducing number free places in party Place
-                freePlaces[3] -= 1;
-                $('.party4').slice(8).text(freePlaces[3]);
-                aliens -= 1;
-                $(snakeCells).removeClass('friends aliens');
-                $(tail).removeClass('snake');
-                snakeCells = snakeCells.slice(1);
+
+            if (iCanTakeFriendFromAnyParty()) {
+                for (var i = 1; i < 5; i++) {
+                    if (iCanTakeFriendFromParty(i)) {
+                        partyFriends[i - 1] -= 1;
+                        $('.party' + i).slice(0, 1).text(partyFriends[i - 1]);
+                        friends += 1;
+                        $(snakeCells).removeClass('head friends aliens');
+                        snakeCells = snakeCells.concat($nextHead.get(0));
+                        $nextHead.addClass('head snake');
+                    }
+                }
+            } else if (iCanLeaveAnAlienInAnyParty()) {
+                 for (var j = 1; j < 5; j++) {
+                     if (iCanLeaveAnAlienInParty(j)) {
+                        freePlaces[j - 1] -= 1;
+                        $('.party' + j).slice(8).text(freePlaces[j - 1]);
+                        aliens -= 1;
+                        $(snakeCells).removeClass('friends aliens');
+                        $(tail).removeClass('snake');
+                        snakeCells = snakeCells.slice(1);
+                     }
+                 }
             } else if (meetFreeAlien()) {
                 aliens += 1;
                 $(snakeCells).removeClass('head friends aliens');
@@ -278,10 +235,18 @@
 
             drawSnake();
 
+            for (var i = 0; i < freeAliens.length-1; i++) {  //moving Free Aliens
+                var nextStep = moves[nextStepFreeAliens[i]](freeAliens[i]);
+                freeAliens[i].removeClass('freeAlien');
+                nextStep.addClass('freeAlien');
+                freeAliens[i] = nextStep;
+            };
+
             $('.scoreFriends').text(`Poszukaj ${totalFriends-friends} przyjaciół`);
             $('.scoreAliens').text(`Masz ${aliens} obcych`);
 
-        }, 600)
+
+        }, 500)
 
 
 //definitions -------------------------
@@ -333,13 +298,22 @@ function addFreePlaces(n) { // generating number of free places in party and inf
     return addPlaces;
 }
 
+function iCanTakeFriendFromAnyParty(){
+    return iCanTakeFriendFromParty(1) || iCanTakeFriendFromParty(2) || iCanTakeFriendFromParty(3) || iCanTakeFriendFromParty(4);
+}
+
 function iCanTakeFriendFromParty(n){  //detect exit head snake from Party
     return (!!$( '.snake.party' + n).length && $('.snake.head.party' + n).length !== 0 && partyFriends[n-1] > 0);
+}
+
+function iCanLeaveAnAlienInAnyParty(){
+    return iCanLeaveAnAlienInParty(1) || iCanLeaveAnAlienInParty(2) || iCanLeaveAnAlienInParty(3) || iCanLeaveAnAlienInParty(4);
 }
 
 function iCanLeaveAnAlienInParty(n){  //detect exit friends and head snake from Party
     return !!$( '.snake.party' + n).length && !$('.snake.friends.party' + n).length && !$('.snake.head.party' + n).length && freePlaces[n-1] > 0;
 }
+
 function meetFreeAlien() {  //detect meeting with FreeAlien
     return $('.snake.freeAlien').length > 0 || $('.head.freeAlien').length > 0
 }
