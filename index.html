@@ -15,6 +15,11 @@
             color: white;
             text-align: center;
         }
+        .bestparty {
+            background: orange;
+            color: white;
+            text-align: center;
+        }
 
         .snake {
             background: yellow;
@@ -103,7 +108,7 @@
         var $tr = $('<tr>');
         var $td;
 
-        createTable(20, 20); // drawing board ---------
+        createTable(30, 20); // drawing board ---------
         $('td', $table).addClass('cell');
         $board.append($table);
 
@@ -118,36 +123,45 @@
         drawSnake(); // drawing snake ---------
 
         $partyOne = drawParty(5, 5, 1); // drawing party places  ---------
-        $partyTwo = drawParty(5, 14, 2);
+        $partyTwo = drawParty(5, 24, 2);
         $partyThree = drawParty(14, 5, 3);
-        $partyFour = drawParty(14, 14, 4);
+        $partyFour = drawParty(14, 24, 4);
+
+        $partyBest = drawBestParty(8, 13);
 
         var partyFriends = addPartyFriends(4);
         var totalFriends = partyFriends.reduce((total, i) => total += i , 0);
-
         var freePlaces = addFreePlaces(4);
 
         $('tr td:nth-child(1)', $table).addClass('enter'); //definition area to enter new free Aliens
-        $('tr td:nth-child(20)', $table).addClass('enter');
+        $('tr td:nth-child(30)', $table).addClass('enter');
         $('tr:nth-child(1) td', $table).addClass('enter');
         $('tr:nth-child(20) td', $table).addClass('enter');
         var $enter = $('.enter');
         var freeAliens = [];
         var nextStepFreeAliens = [];
+        var gameOver = false;
 
         var interval = setInterval(function () {  //generate enter free Aliens
-            freeAliens.push($enter.eq(Math.floor(Math.random() * $enter.length)).addClass('freeAlien'));
 
-            for (var i = 37; i < 41; i++) { //generate first direction of Free Alien
-                if (moves[i](freeAliens[freeAliens.length-1]).length === 0) {
-                    if (i < 39) {
-                        nextStepFreeAliens.push(i+2);
-                    } else {
-                        nextStepFreeAliens.push(i-2);
+            if (gameOver) {
+                stopGame();
+            } else {
+                freeAliens.push($enter.eq(Math.floor(Math.random() * $enter.length)).addClass('freeAlien'));
+
+                for (var i = 37; i < 41; i++) { //generate first direction of Free Alien
+                    if (moves[i](freeAliens[freeAliens.length-1]).length === 0) {
+                        if (i < 39) {
+                            nextStepFreeAliens.push(i+2);
+                        } else {
+                            nextStepFreeAliens.push(i-2);
+                        }
                     }
                 }
-            }
+                
             $enter = $('.enter').not('.freeAlien').not('.snake');
+            }
+
         }, 800);
 
 
@@ -191,11 +205,11 @@
             var $nextHead = direction($(head));
 
             if ($nextHead.hasClass('snake') || $nextHead.length === 0) {
-                clearInterval(interval);
+                gameOver = true;
+                stopGame();
                 alert('GAME OVER');
                 return;
             }
-
 
             if (iCanTakeFriendFromAnyParty()) {
                 for (var i = 1; i < 5; i++) {
@@ -237,6 +251,11 @@
 
             for (var i = 0; i < freeAliens.length-1; i++) {  //moving Free Aliens
                 var nextStep = moves[nextStepFreeAliens[i]](freeAliens[i]);
+
+                if (nextStep.length === 0) {
+                    console.log('AAA');
+                }
+
                 freeAliens[i].removeClass('freeAlien');
                 nextStep.addClass('freeAlien');
                 freeAliens[i] = nextStep;
@@ -280,6 +299,15 @@ function drawParty(x, y, n) {
     return $('.party' + n);
 }
 
+function drawBestParty(x, y) {
+    for (var i = x; i < x + 6; i++) {
+        for (var j = y; j < y + 6; j++) {
+            $('table tr:nth-child(' + i + ') td:nth-child(' + j + ')').addClass('bestparty');
+        }
+    }
+    return $('.bestParty');
+}
+
 function addPartyFriends(n) { // generating number of Friends in party places and info about them
     var addFriends = [];
     for (var i = 0; i < 4; i++) {
@@ -317,6 +345,10 @@ function iCanLeaveAnAlienInParty(n){  //detect exit friends and head snake from 
 function meetFreeAlien() {  //detect meeting with FreeAlien
     return $('.snake.freeAlien').length > 0 || $('.head.freeAlien').length > 0
 }
+
+function stopGame() {
+    return clearInterval(interval);
+};
 
 </script>
 </body>
