@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>jQuery game</title>
     <style>
+        * {
+            /*margin: 0;*/
+            /*padding: 0;*/
+            /*border: 0;*/
+            box-sizing: border-box;
+            border-spacing: 1px;
+        }
+
         .cell {
             border: 1px solid black;
             max-width: 20px;
@@ -16,8 +24,10 @@
             background: blue;
             color: white;
             text-align: center;
-            font-size: 18px;
+            line-height: 20px;
+            font-size: 16px;
         }
+
         .bestparty {
             background: orange;
             color: white;
@@ -165,7 +175,7 @@
             $enter = $('.enter').not('.freeAlien').not('.snake');
             }
 
-        }, 400);
+        }, 3200);
 
 
         var moves = {
@@ -213,6 +223,15 @@
                 alert('GAME OVER');
                 return;
             }
+
+            if ($('.snake.bestparty').length === friends+1) {
+                gameOver = true;
+                stopGame();
+                alert('YOU WIN');
+                return;
+            }
+
+
 
             if (iCanTakeFriendFromAnyParty()) {
                 for (var i = 1; i < 5; i++) {
@@ -311,7 +330,7 @@ function drawBestParty(x, y) {
 function addPartyFriends(n) { // generating number of Friends in party places and info about them
     var addFriends = [];
     for (var i = 0; i < 4; i++) {
-        addFriends.push(Math.round(Math.random(0,1)*3+2));
+        addFriends.push(Math.round(Math.random(0,1)*2+2));
         $('.party' + (i+1)).slice(0,1).text(addFriends[i]);
     }
     return addFriends;
