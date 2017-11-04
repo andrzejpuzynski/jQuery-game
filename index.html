@@ -9,23 +9,77 @@
             /*padding: 0;*/
             /*border: 0;*/
             box-sizing: border-box;
-            border-spacing: 1px;
+            border-spacing: 0px;
+        }
+
+        body {
+            background-color: #000000;
+        }
+
+        h1,
+        h2,
+        p,
+        div,
+        div {
+            text-align: center;
+            color: rgb(250, 175, 24);
+        }
+
+        @keyframes titleIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+
+        h1 {
+            color: rgb(250, 175, 24);
+            font-size: 5em;
+            /*margin-top: 1em;*/
+            margin-bottom: 0.5em;
+            animation-name: titleIn;
+            animation-duration: 2s;
+            transition-duration: 80ms;
+            color: white;
+            text-shadow:
+                    0 0 5px white,
+                    0 0 10px white,
+                    0 0 20px white,
+                    0 0 40px rgb(250, 175, 24),
+                    0 0 70px rgb(250, 175, 24),
+                    0 0 80px rgb(250, 175, 24),
+                    0 0 100px rgb(250, 175, 24),
+                    0 0 150px rgb(250, 175, 24);
+        }
+
+        div > table,
+        #gamerules {
+            color: rgb(250, 175, 24);
+            border: 1px solid;
+
+            margin-right: auto;
+            margin-left: auto;
         }
 
         .cell {
-            border: 1px solid black;
-            max-width: 20px;
-            width: 20px;
-            max-height: 20px;
-            height: 20px;
+            background-color: #202020;
+            /*border: 1px solid black;*/
+            max-width: 25px;
+            width: 25px;
+            max-height: 25px;
+            height: 25px;
         }
 
         .party {
             background: blue;
             color: white;
             text-align: center;
-            line-height: 20px;
-            font-size: 16px;
+            font-size: 23px;
         }
 
         .bestparty {
@@ -39,25 +93,32 @@
         }
 
         .friends {
-            background: lightblue;
+            background: #00dae6;
         }
 
         .aliens {
-            background: black;
+            background: red;
         }
 
         .head {
-            background: red;
+            background: lime;
             background-image: url('https://cdn4.iconfinder.com/data/icons/penguin/154/penguin-baby-small-animal-512.png');
-            background-size: 20px 20px;
+            background-size: 25px 25px;
         }
 
         .enter {
             /*background: pink;*/
         }
 
+        #gamerules {
+            max-width: 800px;
+            border: 1px solid grey;
+            border-spacing: 5px;
+            color: white;
+        }
+
         .freeAlien {
-            background: black;
+            background: red;
         }
 
         .scoreFriends,
@@ -69,7 +130,7 @@
     </style>
 </head>
 <body>
-
+<h1>Best Party Snake</h1>
 <div id="board"></div>
 <div>
     <div class="scoreFriends"></div>
@@ -78,14 +139,16 @@
 
 <h2>Zasady gry</h2>
 <p></p>
-<p>Dzięki Wyszukiwarce Najlepszych Imprez W Mieście udało Ci się znaleźć najlepszą imprezę tego wieczoru i nabyłeś ostatnie bilety dla siebie i swoich przyjaciół.
-    Wchodzisz do imprezowej dzielnicy miasta. Twoim zadaniem jest odwiedzić wszystkie miejsca imprez, zabrać stamtąd swoich przyjaciół i udać się z nimi na Najlepszą Imprezę W Mieście.
-    Jako wyjątkowo towarzyska osoba przyciągasz jednak przypadkowych imprezowiczów, którzy koniecznie chcą do Ciebie dołączyć. Każda napotkana osoba dołącza do Ciebie i Twoich przyjaciół. Przypadkowych imprezowiczów możesz zaprowadzić do dowolnego miejsca imprezy i tam pozostawić pod warunkiem, że w lokalu jest wolne miejsce. Wygrywasz, jeśli na imprezę specjalną dotrzesz tylko ze swoimi przyjaciółmi.
+<p>
 </p>
-<table style="border: 1px solid grey; border-spacing: 5px">
+<table id="gamerules">
     <tr>
-        <td width="16px"></td>
+        <td width="25px"></td>
         <td width="300px"></td>
+    </tr>
+
+    <tr>
+        <td colspan="2">Jesteś imprezowiczem. Poruszasz się po mieście poszukując w lokalach swoich znajomych i zabierając ich ze sobą. Jednocześnie dołączają do ciebie inni imprezowicze, których możesz pozostawić tylko w lokalach, gdzie są wolne miejsca. Gra kończy się gdy wejdziesz do miejsca Best Party tylko ze swoimi znajomymi.</td>
     </tr>
     <tr>
         <td class="head"></td>
@@ -110,6 +173,10 @@
     <tr>
         <td class="party">2</td>
         <td>Liczba wolnych miejsc (na dole) w lokalu.</td>
+    </tr>
+    <tr>
+        <td class="bestparty"></td>
+        <td>"Best Party" - miejsce zakończenia gry</td>
     </tr>
 </table>
 
@@ -175,7 +242,7 @@
             $enter = $('.enter').not('.freeAlien').not('.snake');
             }
 
-        }, 3200);
+        }, 2000);
 
 
         var moves = {
@@ -284,7 +351,7 @@
             $('.scoreAliens').text(`Masz ${aliens} obcych`);
 
 
-        }, 300)
+        }, 250)
 
 
 //definitions -------------------------
