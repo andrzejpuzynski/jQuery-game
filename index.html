@@ -6,14 +6,17 @@
     <style>
         .cell {
             border: 1px solid black;
-            width: 16px;
-            height: 16px
+            max-width: 20px;
+            width: 20px;
+            max-height: 20px;
+            height: 20px;
         }
 
         .party {
             background: blue;
             color: white;
             text-align: center;
+            font-size: 18px;
         }
         .bestparty {
             background: orange;
@@ -36,7 +39,7 @@
         .head {
             background: red;
             background-image: url('https://cdn4.iconfinder.com/data/icons/penguin/154/penguin-baby-small-animal-512.png');
-            background-size: 16px 16px;
+            background-size: 20px 20px;
         }
 
         .enter {
@@ -50,7 +53,7 @@
         .scoreFriends,
         .scoreAliens {
             display: block;
-            font-size: 2em;
+            font-size: 3em;
         }
 
     </style>
@@ -158,11 +161,11 @@
                         }
                     }
                 }
-                
+
             $enter = $('.enter').not('.freeAlien').not('.snake');
             }
 
-        }, 800);
+        }, 400);
 
 
         var moves = {
@@ -249,13 +252,10 @@
 
             drawSnake();
 
+            removeFreeAliensAttachedToSnake()
+
             for (var i = 0; i < freeAliens.length-1; i++) {  //moving Free Aliens
                 var nextStep = moves[nextStepFreeAliens[i]](freeAliens[i]);
-
-                if (nextStep.length === 0) {
-                    console.log('AAA');
-                }
-
                 freeAliens[i].removeClass('freeAlien');
                 nextStep.addClass('freeAlien');
                 freeAliens[i] = nextStep;
@@ -265,7 +265,7 @@
             $('.scoreAliens').text(`Masz ${aliens} obcych`);
 
 
-        }, 500)
+        }, 300)
 
 
 //definitions -------------------------
@@ -345,6 +345,28 @@ function iCanLeaveAnAlienInParty(n){  //detect exit friends and head snake from 
 function meetFreeAlien() {  //detect meeting with FreeAlien
     return $('.snake.freeAlien').length > 0 || $('.head.freeAlien').length > 0
 }
+
+function removeFreeAliensAttachedToSnake() {
+    var tempFreeAliens = [];
+    var tempNextStepFreeAliens = [];
+
+    for (var i = 0; i < freeAliens.length; i++) {
+        if (!freeAliens[i].hasClass('snake')) {
+            tempFreeAliens.push(freeAliens[i]);
+            tempNextStepFreeAliens.push(nextStepFreeAliens[i]);
+        } else {
+            freeAliens[i].removeClass('freeAlien');
+        }
+    }
+
+    freeAliens.length = 0;
+    nextStepFreeAliens.length = 0;
+    freeAliens = tempFreeAliens;
+    nextStepFreeAliens = tempNextStepFreeAliens;
+
+    return
+}
+
 
 function stopGame() {
     return clearInterval(interval);
