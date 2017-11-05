@@ -291,7 +291,7 @@
                 return;
             }
 
-            if ($('.snake.bestparty').length === friends+1) {
+            if ($('.snake.bestparty').length === friends+1 && partyFriends[0] === 0 && partyFriends[1] === 0 && partyFriends[2] === 0 && partyFriends[3] === 0) {
                 gameOver = true;
                 stopGame();
                 alert('YOU WIN');
