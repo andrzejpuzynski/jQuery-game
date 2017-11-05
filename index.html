@@ -134,11 +134,9 @@
     <div class="scoreFriends"></div>
     <div class="scoreAliens"></div>
 </div>
-
+<div id="scores"></div>
 <h2>Zasady gry</h2>
 <p></p>
-<p>
-</p>
 <table id="gamerules">
     <tr>
         <td width="25px"></td>
@@ -189,10 +187,17 @@
     var $table = $('<table>');
     var $tr = $('<tr>');
     var $td;
+    var $scores = $('#scores');
+    var $tableScrores = $('<table>');
 
     createTable(30, 20); // drawing board ---------
     $('td', $table).addClass('cell');
     $board.append($table);
+
+    createScores();
+    $('td', $tableScores).addClass('scores');
+    $scores.append($tableScores);
+
 
     var aliens = 0; // snake character ---------
     var friends = 0;
@@ -279,6 +284,9 @@
 
         direction = moves[event.keyCode] || direction
     });
+
+
+    var scores = [];
 
     var seconds = 0;
     countTime();
@@ -369,6 +377,17 @@
                 $tr.append($td);
             }
             $table.append($tr);
+        }
+    }
+
+    function createScores() { // TODO: length of Table is actual number of scores
+        for (var j = 0; j < 6; j++) {
+            $tr = $('<tr>');
+            for (var i = 0; i < 3; i++) {
+                $td = $('<td>');
+                $tr.append($td);
+            }
+            $tableScores.append($tr);
         }
     }
 
@@ -465,6 +484,17 @@
             }, 1000
         );
     }
+
+    function saveScores () {
+        localStorage.setItem('BestPartySnake', JSON.stringify(scores));
+    }
+
+    function getScores () {
+        var scores = JSON.parse(localStorage.getItem('BestPartySnake'));
+
+    }
+
+
 
 
     function stopGame() {
