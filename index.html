@@ -58,8 +58,7 @@
         div > table,
         #gamerules {
             color: rgb(250, 175, 24);
-            border: 1px solid;
-
+            border: 2px solid;
             margin-right: auto;
             margin-left: auto;
         }
@@ -94,6 +93,11 @@
             background: #00dae6;
         }
 
+        .friendsInParty {
+            background: #00f3ff;
+        }
+
+
         .aliens {
             background: red;
         }
@@ -105,11 +109,10 @@
         }
 
         .enter {
-            /*background: pink;*/
         }
 
         #gamerules {
-            max-width: 800px;
+            max-width: 600px;
             border: 1px solid grey;
             border-spacing: 5px;
             color: white;
@@ -138,13 +141,13 @@
 <table id="gamerules">
     <tr>
         <td width="25px"></td>
-        <td width="300px"></td>
+        <td></td>
     </tr>
 
     <tr>
         <td colspan="2">Jesteś imprezowiczem. Poruszasz się po mieście poszukując w lokalach swoich znajomych i
             zabierając ich ze sobą. Jednocześnie dołączają do ciebie inni imprezowicze, których możesz pozostawić tylko
-            w lokalach, gdzie są wolne miejsca. Gra kończy się gdy wejdziesz do miejsca Best Party tylko ze swoimi
+            w lokalach, gdzie są wolne miejsca. Gra kończy się gdy wejdziesz do miejsca "Best Party" tylko ze swoimi
             znajomymi.
         </td>
     </tr>
@@ -160,17 +163,9 @@
         <td class="aliens"></td>
         <td>Przypadkowy imprezowicz</td>
     </tr>
-    <tr>
-        <td class="party"></td>
-        <td>Miejsce imprezy</td>
-    </tr>
-    <tr>
+     <tr>
         <td class="party">2</td>
-        <td>Liczba przyjaciół (na górze) w lokalu.</td>
-    </tr>
-    <tr>
-        <td class="party">2</td>
-        <td>Liczba wolnych miejsc (na dole) w lokalu.</td>
+        <td>Miejsce imprezy oraz liczba wolnych tam miejsc.</td>
     </tr>
     <tr>
         <td class="bestparty"></td>
@@ -313,8 +308,9 @@
         if (iCanTakeFriendFromAnyParty()) {
             for (var i = 1; i < 5; i++) {
                 if (iCanTakeFriendFromParty(i)) {
+                    $('.party' + i).slice(partyFriends[i-1]-1).removeClass('friendsInParty');
                     partyFriends[i - 1] -= 1;
-                    $('.party' + i).slice(0, 1).text(partyFriends[i - 1]);
+//                    $('.party' + i).slice(0, 1).text(partyFriends[i - 1]);
                     friends += 1;
                     $(snakeCells).removeClass('head friends aliens');
                     snakeCells = snakeCells.concat($nextHead.get(0));
@@ -419,7 +415,8 @@
         var addFriends = [];
         for (var i = 0; i < 4; i++) {
             addFriends.push(Math.round(Math.random(0, 1) * 2 + 2));
-            $('.party' + (i + 1)).slice(0, 1).text(addFriends[i]);
+//            $('.party' + (i + 1)).slice(0, 1).text(addFriends[i]);
+            $('.party' + (i + 1)).slice(0, addFriends[i]).addClass('friendsInParty');
         }
         return addFriends;
     }
@@ -450,7 +447,8 @@
     }
 
     function meetFreeAlien() {  //detect meeting with FreeAlien
-        return $('.snake.freeAlien').length > 0 || $('.head.freeAlien').length > 0
+//        return $('.snake.freeAlien').length > 0 || $('.snake.head.freeAlien').length > 0;
+        return $('.snake.freeAlien').length > 0;
     }
 
     function removeFreeAliensAttachedToSnake() {
