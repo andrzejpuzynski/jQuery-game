@@ -119,8 +119,7 @@
             background: red;
         }
 
-        .scoreFriends,
-        .scoreAliens {
+        .showGameTime {
             display: block;
             font-size: 3em;
         }
@@ -131,8 +130,7 @@
 <h1>Best Party Snake</h1>
 <div id="board"></div>
 <div>
-    <div class="scoreFriends"></div>
-    <div class="scoreAliens"></div>
+    <div class="showGameTime"></div>
 </div>
 <div id="scores"></div>
 <h2>Zasady gry</h2>
@@ -188,7 +186,7 @@
     var $tr = $('<tr>');
     var $td;
     var $scores = $('#scores');
-    var $tableScrores = $('<table>');
+    var $tableScores = $('<table>');
 
     createTable(30, 20); // drawing board ---------
     $('td', $table).addClass('cell');
@@ -249,7 +247,7 @@
             $enter = $('.enter').not('.freeAlien').not('.snake');
         }
 
-    }, 1000);
+    }, 500);
 
 
     var moves = {
@@ -304,7 +302,7 @@
             return;
         }
 
-        if ($('.snake.bestparty').length === friends + 1 && partyFriends[0] === 0 && partyFriends[1] === 0 && partyFriends[2] === 0 && partyFriends[3] === 0) {
+        if ($('.snake.bestparty').length === friends + 1 && partyFriends[0] === 0 && partyFriends[1] === 0 && partyFriends[2] === 0 && partyFriends[3] === 0 && aliens === 0)  {
             gameOver = true;
             stopGame();
             alert('YOU WIN');
@@ -350,7 +348,7 @@
 
         drawSnake();
 
-        removeFreeAliensAttachedToSnake()
+        removeFreeAliensAttachedToSnake();
 
         for (var i = 0; i < freeAliens.length - 1; i++) {  //moving Free Aliens
             var nextStep = moves[nextStepFreeAliens[i]](freeAliens[i]);
@@ -360,11 +358,10 @@
         }
 
 
-//        $('.scoreFriends').text(`Poszukaj ${totalFriends - friends} przyjaciół`);/
-        $('.scoreAliens').text(`Time: ${seconds} seconds`);
+        $('.showGameTime').text(`Time: ${seconds} seconds`);
 
 
-    }, 250)
+    }, 220)
 
 
     //definitions -------------------------
