@@ -27,7 +27,7 @@
 
         @keyframes titleIn {
             0% {
-                transform: scale(0.8);
+                transform: scale(0.85);
                 opacity: 0;
             }
             100% {
@@ -36,11 +36,7 @@
             }
         }
 
-        h1 {
-            color: rgb(250, 175, 24);
-            font-size: 5em;
-            /*margin-top: 1em;*/
-            margin-bottom: 0.5em;
+        h1, h2 {
             animation-name: titleIn;
             animation-duration: 2s;
             transition-duration: 80ms;
@@ -53,6 +49,14 @@
             0 0 80px rgb(250, 175, 24),
             0 0 100px rgb(250, 175, 24),
             0 0 150px rgb(250, 175, 24);
+        }
+
+        h1 {
+            font-size: 5em;
+        }
+
+        h2 {
+            font-size: 3em;
         }
 
         div > table,
@@ -135,8 +139,9 @@
 <div>
     <div class="showGameTime"></div>
 </div>
+<h2>Best scores</h2>
 <div id="scores"></div>
-<h2>Zasady gry</h2>
+<h2>Game rules</h2>
 <p></p>
 <table id="gamerules">
     <tr>
@@ -180,17 +185,40 @@
     var $table = $('<table>');
     var $tr = $('<tr>');
     var $td;
-    var $scores = $('#scores');
-    var $tableScores = $('<table>');
 
     createTable(30, 20); // drawing board ---------
     $('td', $table).addClass('cell');
     $board.append($table);
 
-    createScores();
-    $('td', $tableScores).addClass('scores');
-    $scores.append($tableScores);
+    var $scores = $('#scores');
+    var $ol = $('<ol>');
+    var bestScores = [
+        {
+            id: 1,
+            name: 'Andrew',
+            playtime: 60
+        },
+        {
+            id: 2,
+            name: 'Felice',
+            playtime: 70
+        },
+        {
+            id: 3,
+            name: 'Alice',
+            playtime: 80
+        }
+    ];
 
+    $ol.append(
+        bestScores.map(
+            function (item) {
+                return $('<li>').text(`${item.name}': ${item.playtime} seconds`);
+            }
+        )
+    );
+
+    $scores.append($ol);
 
     var aliens = 0; // snake character ---------
     var friends = 0;
@@ -373,7 +401,7 @@
         }
     }
 
-    function createScores() { // TODO: length of Table is actual number of scores
+    function refreshScores() { // TODO: length of Table is actual number of scores
         for (var j = 0; j < 6; j++) {
             $tr = $('<tr>');
             for (var i = 0; i < 3; i++) {
@@ -480,7 +508,7 @@
         );
     }
 
-    function saveScores () {
+    function updateScores () {
         localStorage.setItem('BestPartySnake', JSON.stringify(scores));
     }
 
