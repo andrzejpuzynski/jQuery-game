@@ -307,7 +307,12 @@
     var scores = [];
 
     var seconds = 0;
-    countTime();
+
+    if (gameOver !== true) {
+        countTime();
+    }
+
+
 
     var interval = setInterval(function () {
         var tail = snakeCells[0];
@@ -351,7 +356,7 @@
                     $(snakeCells).removeClass('friends aliens');
                     $(tail).removeClass('snake');
                     snakeCells = snakeCells.slice(1);
-                    j = 5; // here fix yellow snake's shit when it is in two parties:)
+                    j = 5; // here fix yellow snake's bug when it is in two parties:)
                 }
             }
         } else if (meetFreeAlien()) {
@@ -369,6 +374,7 @@
         }
 
         drawSnake();
+
 
         removeFreeAliensAttachedToSnake();
 
@@ -396,17 +402,6 @@
                 $tr.append($td);
             }
             $table.append($tr);
-        }
-    }
-
-    function refreshScores() { // TODO: length of Table is actual number of scores
-        for (var j = 0; j < 6; j++) {
-            $tr = $('<tr>');
-            for (var i = 0; i < 3; i++) {
-                $td = $('<td>');
-                $tr.append($td);
-            }
-            $tableScores.append($tr);
         }
     }
 
@@ -474,7 +469,8 @@
 
     function meetFreeAlien() {  //detect meeting with FreeAlien
 //        return $('.snake.freeAlien').length > 0 || $('.snake.head.freeAlien').length > 0;
-        return $('.snake.freeAlien').length > 0;
+        return $('.snake.freeAlien').length > 0 || $('.nextHead.freeAlien').length > 0;
+//        return $('.snake.freeAlien').length > 0;
     }
 
     function removeFreeAliensAttachedToSnake() {
@@ -499,11 +495,14 @@
     }
 
     function countTime() {
-        var timer = setInterval(
+        setInterval(
             function () {
-                seconds++;
-            }, 1000
-        );
+                if (gameOver) {
+                    stopGame();
+                } else {
+                    seconds++;
+                }
+        }, 1000);
     }
 
     function updateScores () {
@@ -514,9 +513,6 @@
         var scores = JSON.parse(localStorage.getItem('BestPartySnake'));
 
     }
-
-
-
 
     function stopGame() {
         return clearInterval(interval);
