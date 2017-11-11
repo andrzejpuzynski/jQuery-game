@@ -163,7 +163,7 @@
     <div class="showGameTime"></div>
     <form id="saveScoreForm">
         <p>Enter your name</p>
-        <input type="text" value="""/>
+        <input type="text" value=""/>
         <button>Save score</button>
     </form>
 </div>
@@ -341,6 +341,7 @@
             stopGame();
             alert('YOU WIN');
             $('form#saveScoreForm').toggle();
+            addWinnerNameToScores();
             return;
         }
 
@@ -515,8 +516,26 @@
         }, 1000);
     }
 
-    function updateScores () {
-        localStorage.setItem('BestPartySnake', JSON.stringify(scores));
+    function addWinnerNameToScores() {
+        $('form#saveScoreForm').on('submit', function (event) {
+            event.preventDefault();
+            var value = $('input').val();
+            if (value === '') {
+                return
+            }
+
+            $('input').val('');
+            bestScores.push({
+                id: bestScores.reduce(function (currentMaxId, nextScore) {
+                    return Math.max(currentMaxId, nextScore.id)
+                }, 0) + 1,
+                name: value,
+                playtime: seconds
+            });
+            localStorage.setItem('BestPartySnake', JSON.stringify(bestScores));
+            $('form#saveScoreForm').toggle();
+//            refreshTasksList();
+        });
     }
 
     function getScores () {
