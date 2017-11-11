@@ -351,6 +351,7 @@
                     $(snakeCells).removeClass('friends aliens');
                     $(tail).removeClass('snake');
                     snakeCells = snakeCells.slice(1);
+                    j = 5; // here fix yellow snake's shit when it is in two parties:)
                 }
             }
         } else if (meetFreeAlien()) {
