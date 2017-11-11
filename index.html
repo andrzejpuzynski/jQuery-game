@@ -150,6 +150,10 @@
             color: white;
         }
 
+        #saveScoreForm {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -157,6 +161,11 @@
 <div id="board"></div>
 <div>
     <div class="showGameTime"></div>
+    <form id="saveScoreForm">
+        <p>Enter your name</p>
+        <input type="text" value="""/>
+        <button>Save score</button>
+    </form>
 </div>
 <h2>Scores</h2>
 <div id="scores"></div>
@@ -331,6 +340,7 @@
             gameOver = true;
             stopGame();
             alert('YOU WIN');
+            $('form#saveScoreForm').toggle();
             return;
         }
 
@@ -386,7 +396,7 @@
         }
 
 
-        $('.showGameTime').text(`Time: ${seconds} seconds`);
+        $('.showGameTime').text(`Time: ${seconds} seconds`)
 
 
     }, 220)
@@ -435,7 +445,7 @@
     function addPartyFriends(n) { // generating number of Friends in party places and info about them
         var addFriends = [];
         for (var i = 0; i < 4; i++) {
-            addFriends.push(Math.round(Math.random(0, 1) * 2 + 2));
+            addFriends.push(Math.round(Math.random(0, 1) * 2 + 0));
 //            $('.party' + (i + 1)).slice(0, 1).text(addFriends[i]);
             $('.party' + (i + 1)).slice(0, addFriends[i]).addClass('friendsInParty');
         }
