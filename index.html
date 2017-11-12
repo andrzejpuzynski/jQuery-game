@@ -167,7 +167,7 @@
         <button>Save score</button>
     </form>
 </div>
-<h2>Scores</h2>
+<h2>Best 5 scores</h2>
 <div id="scores"></div>
 <h2>Game rules</h2>
 <div id="gamerules">
@@ -191,7 +191,6 @@
     $board.append($table);
 
     var $scores = $('#scores');
-    var $ol = $('<ol>');
     var bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
 
     $scores.append(
@@ -203,7 +202,7 @@
                             $('<td>').text(item.name)
                         )
                         .append(
-                            $('<td>').text(`${item.playtime} sec.`)
+                            $('<td>').text(`${item.playtime} seconds`)
                         )
                 }
             )
@@ -508,14 +507,35 @@
                 return
             }
 
-//            $('input').val('');
-            bestScores.push({
-                id: bestScores.reduce(function (currentMaxId, nextScore) {
-                    return Math.max(currentMaxId, nextScore.id)
-                }, 0) + 1,
-                name: value,
-                playtime: seconds
-            });
+            var positionToInsert = 0;
+
+            function setPosition() {
+                for (var i = 0; i < bestScores.length; i++) {
+                    if (seconds > bestScores[i].playtime) {
+                        positionToInsert += 1;
+                    }
+                };
+                return positionToInsert;
+            }
+
+            setPosition();
+
+
+            if (bestScores.length === 0) {
+                bestScores.push({
+                    name: value,
+                    playtime: seconds
+                });
+            } else {
+                bestScores.splice(positionToInsert, 0,
+                    {
+                    name: value,
+                    playtime: seconds
+                    }
+                );
+            }
+            bestScores.splice(5)
+
             localStorage.setItem('BestPartySnake', JSON.stringify(bestScores));
             $('form#saveScoreForm').toggle();
 //            refreshTasksList();
