@@ -192,23 +192,7 @@
 
     var $scores = $('#scores');
     var $ol = $('<ol>');
-    var bestScores = [
-        {
-            id: 1,
-            name: 'Andrew',
-            playtime: 60
-        },
-        {
-            id: 2,
-            name: 'Felice',
-            playtime: 70
-        },
-        {
-            id: 3,
-            name: 'Alice',
-            playtime: 80
-        }
-    ];
+    var bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
 
     $scores.append(
         $('<table>').append(
@@ -524,7 +508,7 @@
                 return
             }
 
-            $('input').val('');
+//            $('input').val('');
             bestScores.push({
                 id: bestScores.reduce(function (currentMaxId, nextScore) {
                     return Math.max(currentMaxId, nextScore.id)
