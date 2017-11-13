@@ -5,9 +5,6 @@
     <title>jQuery game</title>
     <style>
         * {
-            /*margin: 0;*/
-            /*padding: 0;*/
-            /*border: 0;*/
             box-sizing: border-box;
             border-spacing: 0px;
         }
@@ -57,7 +54,7 @@
         h2 {
             font-size: 3em;
             margin-top: 2em;
-            margin-bottom: 0.4em;
+            margin-bottom: 1em;
         }
 
         div > table {
@@ -67,9 +64,12 @@
             margin-left: auto;
         }
 
+        #board {
+            display: none;
+        }
+
         .cell {
             background-color: #202020;
-            /*border: 1px solid black;*/
             max-width: 25px;
             width: 25px;
             max-height: 25px;
@@ -122,16 +122,13 @@
             text-align: left;
         }
 
-        #gamerules {
+        #gamerules > p {
             max-width: 800px;
-            padding: 15px;
-            color: rgb(250, 175, 24);
             color: white;
             margin-right: auto;
             margin-left: auto;
             font-size: 2em;
-            line-height: 1.2em;
-            /*text-align: left;*/
+            line-height: 1.4em;
         }
 
         .freeAlien {
@@ -143,6 +140,20 @@
             font-size: 3em;
         }
 
+        .gameOver {
+            position: fixed;
+            background-color: rgba(0,0,0,0.99);
+            color: red;
+            /*padding-top: 5%;*/
+            /*padding-bottom: 5%;*/
+            font-size: 8em;
+            width: 100%;
+            /*height: 20%;*/
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         .test{
             display: inline-block;
             width: 25px;
@@ -150,7 +161,9 @@
             color: white;
         }
 
-        #saveScoreForm {
+        #saveScoreForm,
+        #playAgain,
+        #scores {
             display: none;
         }
 
@@ -158,28 +171,53 @@
 </head>
 <body>
 <h1>Best Party Snake</h1>
-<div id="board"></div>
-<div>
-    <div class="showGameTime"></div>
-    <form id="saveScoreForm">
-        <p>Enter your name</p>
-        <input type="text" value=""/>
-        <button>Save score</button>
-    </form>
-</div>
-<h2>Best 5 scores</h2>
-<div id="scores"></div>
-<h2>Game rules</h2>
+
+
 <div id="gamerules">
-    Jesteś imprezowiczem <span class="head test"></span>.
-    Poruszasz się po mieście poszukując w lokalach swoich znajomych <span class="friends test"></span> i zabierając ich ze sobą.
-    Jednocześnie dołączają do ciebie inni przypadkowi imprezowicze <span class="aliens test"></span>.
-    Musisz pozbyć się ich, pozostawiając ich w lokalach z wolnymi miejscami oznaczonymi <span class="party test">2</span>.
-    Gra kończy się, gdy wejdziesz do miejsca "BestParty" <span class="bestparty test"></span> tylko ze swoimi znajomymi.
+    <h2>Game rules</h2>
+    <p>Jesteś imprezowiczem <span class="head test"></span>.</p>
+    <p>Poszukujesz w lokalach swoich znajomych <span class="friends test"></span> by zabrac wszystkich na najlepsza impreze.</p>
+    <p>W miedzyczasie dołączają do ciebie przypadkowi imprezowicze <span class="aliens test"></span>.  Zaprowadz ich do lokalu z wolnymi miejscami <span class="party test">2</span> aby sie ich pozbyc.</p>
+    <p>
+    Wygrywasz jesli wejdziesz do miejsca "BestParty" <span class="bestparty test"></span> tylko ze swoimi znajomymi.
+    </p>
+    <button id="closeGameRules">Play game</button>
 </div>
+
+    <div id="board"></div>
+    <div>
+        <div class="showGameTime"></div>
+        <form id="saveScoreForm">
+            <p>Enter your name</p>
+            <input type="text" value=""/>
+            <button>Save score</button>
+        </form>
+        <button id="playAgain">Play again</button>
+    </div>
+
+    <div id="scores">
+        <h2>Best 5 scores</h2>
+
+    </div>
+
 
 <script src="js/jquery-3.2.1.js"></script>
 <script>
+
+
+    $('button#closeGameRules').click(function() {
+        $('div#gamerules').toggle(700);
+        $('div#board').toggle();
+        playGame();
+    });
+
+    $('button#playAgain').click(function() {
+        $('#board').empty();
+         playGame();
+    });
+
+
+function playGame() {
 
     var $board = $('#board');
     var $table = $('<table>');
@@ -192,6 +230,7 @@
 
     var $scores = $('#scores');
     var bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
+    $scores.empty();
     refreshScores();
 
 
@@ -224,29 +263,6 @@
     var freeAliens = [];
     var nextStepFreeAliens = [];
     var gameOver = false;
-
-    var interval = setInterval(function () {  //generate enter free Aliens
-
-        if (gameOver) {
-            stopGame();
-        } else {
-            freeAliens.push($enter.eq(Math.floor(Math.random() * $enter.length)).addClass('freeAlien'));
-
-            for (var i = 37; i < 41; i++) { //generate first direction of Free Alien
-                if (moves[i](freeAliens[freeAliens.length - 1]).length === 0) {
-                    if (i < 39) {
-                        nextStepFreeAliens.push(i + 2);
-                    } else {
-                        nextStepFreeAliens.push(i - 2);
-                    }
-                }
-            }
-
-            $enter = $('.enter').not('.freeAlien').not('.snake');
-        }
-
-    }, 500);
-
 
     var moves = {
         38: function up($node) {
@@ -291,6 +307,27 @@
     }
 
 
+    var interval = setInterval(function () {  //generate enter free Aliens
+
+        if (gameOver) {
+            stopGame();
+        } else {
+            freeAliens.push($enter.eq(Math.floor(Math.random() * $enter.length)).addClass('freeAlien'));
+
+            for (var i = 37; i < 41; i++) { //generate first direction of Free Alien
+                if (moves[i](freeAliens[freeAliens.length - 1]).length === 0) {
+                    if (i < 39) {
+                        nextStepFreeAliens.push(i + 2);
+                    } else {
+                        nextStepFreeAliens.push(i - 2);
+                    }
+                }
+            }
+
+            $enter = $('.enter').not('.freeAlien').not('.snake');
+        }
+
+    }, 500);
 
     var interval = setInterval(function () {
         var tail = snakeCells[0];
@@ -301,7 +338,9 @@
         if ($nextHead.hasClass('snake') || $nextHead.length === 0) {
             gameOver = true;
             stopGame();
+            gameOverStatement();
             alert('GAME OVER');
+            $('#playAgain').toggle();
             return;
         }
 
@@ -320,7 +359,6 @@
                 if (iCanTakeFriendFromParty(i)) {
                     $('.party' + i).slice(partyFriends[i-1]-1).removeClass('friendsInParty');
                     partyFriends[i - 1] -= 1;
-//                    $('.party' + i).slice(0, 1).text(partyFriends[i - 1]);
                     friends += 1;
                     $(snakeCells).removeClass('head friends aliens');
                     snakeCells = snakeCells.concat($nextHead.get(0));
@@ -355,7 +393,6 @@
 
         drawSnake();
 
-
         removeFreeAliensAttachedToSnake();
 
         for (var i = 0; i < freeAliens.length - 1; i++) {  //moving Free Aliens
@@ -365,11 +402,10 @@
             freeAliens[i] = nextStep;
         }
 
-
         $('.showGameTime').text(`Time: ${seconds} seconds`)
 
 
-    }, 220)
+    }, 220);
 
 
     //definitions -------------------------
@@ -448,9 +484,7 @@
     }
 
     function meetFreeAlien() {  //detect meeting with FreeAlien
-//        return $('.snake.freeAlien').length > 0 || $('.snake.head.freeAlien').length > 0;
         return $('.snake.freeAlien').length > 0 || $('.nextHead.freeAlien').length > 0;
-//        return $('.snake.freeAlien').length > 0;
     }
 
     function removeFreeAliensAttachedToSnake() {
@@ -485,6 +519,7 @@
         }, 1000);
     }
 
+
     function addWinnerNameToScores() {
         $('form#saveScoreForm').on('submit', function (event) {
             event.preventDefault();
@@ -507,7 +542,7 @@
             setPosition();
 
 
-            if (bestScores.length === 0) {
+            if (bestScores.length === 0 || positionToInsert > 3) {
                 bestScores.push({
                     name: value,
                     playtime: seconds
@@ -553,6 +588,17 @@
     function stopGame() {
         return clearInterval(interval);
     };
+
+    function gameOverStatement() {
+        $('#board').append('<div class="gameOver">' +
+            '<div>GAME OVER</div>' +
+            '<button id="playAgain">Play again</button>' +
+            '</div>').click(function() {
+                $('div.gameOver').empty();
+        });
+    };
+
+}
 
 </script>
 </body>
