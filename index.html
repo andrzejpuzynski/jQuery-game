@@ -23,7 +23,7 @@
 
         @keyframes titleIn {
             0% {
-                transform: scale(0.85);
+                transform: scale(0.9);
                 opacity: 0;
             }
             100% {
@@ -53,8 +53,8 @@
 
         h2 {
             font-size: 3em;
-            margin-top: 2em;
-            margin-bottom: 1em;
+            margin-top: 1.6em;
+            margin-bottom: 0.4em;
         }
 
         div > table {
@@ -62,10 +62,6 @@
             border: 2px solid;
             margin-right: auto;
             margin-left: auto;
-        }
-
-        #board {
-            display: none;
         }
 
         .cell {
@@ -116,7 +112,7 @@
         }
 
         #scores > table {
-            width: 400px;
+            width: 300px;
             font-size: 2.4em;
             border: none;
             text-align: left;
@@ -128,7 +124,7 @@
             margin-right: auto;
             margin-left: auto;
             font-size: 2em;
-            line-height: 1.4em;
+            line-height: 1.1em;
         }
 
         .freeAlien {
@@ -142,13 +138,13 @@
 
         .gameOver {
             position: fixed;
-            background-color: rgba(0,0,0,0.99);
+            background-color: rgba(0,0,0,0.29);
             color: red;
-            /*padding-top: 5%;*/
-            /*padding-bottom: 5%;*/
+            padding-top: 20%;
+            padding-bottom: 50%;
             font-size: 8em;
             width: 100%;
-            /*height: 20%;*/
+            height: 100%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -161,9 +157,11 @@
             color: white;
         }
 
+        #board,
         #saveScoreForm,
-        #playAgain,
-        #scores {
+        #scoresTopFive,
+        .showGameTime,
+        .gameOver {
             display: none;
         }
 
@@ -172,34 +170,38 @@
 <body>
 <h1>Best Party Snake</h1>
 
-
 <div id="gamerules">
     <h2>Game rules</h2>
     <p>Jesteś imprezowiczem <span class="head test"></span>.</p>
-    <p>Poszukujesz w lokalach swoich znajomych <span class="friends test"></span> by zabrac wszystkich na najlepsza impreze.</p>
-    <p>W miedzyczasie dołączają do ciebie przypadkowi imprezowicze <span class="aliens test"></span>.  Zaprowadz ich do lokalu z wolnymi miejscami <span class="party test">2</span> aby sie ich pozbyc.</p>
+    <p>Poszukujesz w lokalach swoich znajomych <span class="friends test"></span>, by zebrać ich wszystkich i zaprowadzić na najlepszą imprezę do miejsca "Best Party".</p>
+    <p>Niechcianych imprezowiczów <span class="aliens test"></span>, którzy dołączą do waszej grupy, zaprowadź do lokalu z wolnymi miejscami <span class="party test">2</span> i tam ich pozostaw.</p>
     <p>
-    Wygrywasz jesli wejdziesz do miejsca "BestParty" <span class="bestparty test"></span> tylko ze swoimi znajomymi.
+    Wygrywasz, jeśli do miejsca "BestParty" <span class="bestparty test"></span> wejdziesz tylko ze swoimi znajomymi.
     </p>
     <button id="closeGameRules">Play game</button>
 </div>
 
-    <div id="board"></div>
-    <div>
-        <div class="showGameTime"></div>
-        <form id="saveScoreForm">
-            <p>Enter your name</p>
-            <input type="text" value=""/>
-            <button>Save score</button>
-        </form>
-        <button id="playAgain">Play again</button>
-    </div>
+<div id="board"></div>
+<div class="showGameTime"></div>
 
-    <div id="scores">
-        <h2>Best 5 scores</h2>
+<div id="saveScoreForm">
+    <form >
+        <p>Enter your name</p>
+        <input type="text" value=""/>
+        <button>Save score</button>
+    </form>
+</div>
 
-    </div>
+<div id="scoresTopFive">
+    <h2 id="scoresTitle">Best 5 scores</h2>
+    <div id="scores"></div>
+    <button id="playAgainAfterScores">Play again</button>
+</div>
 
+<div class="gameOver">
+    <div>GAME OVER</div>
+    <button id="playAgainAfterGameOver">Play again</button>
+</div>
 
 <script src="js/jquery-3.2.1.js"></script>
 <script>
@@ -209,11 +211,6 @@
         $('div#gamerules').toggle(700);
         $('div#board').toggle();
         playGame();
-    });
-
-    $('button#playAgain').click(function() {
-        $('#board').empty();
-         playGame();
     });
 
 
@@ -227,6 +224,7 @@ function playGame() {
     createTable(30, 20); // drawing board ---------
     $('td', $table).addClass('cell');
     $board.append($table);
+    $('.showGameTime').toggle();
 
     var $scores = $('#scores');
     var bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
@@ -307,10 +305,10 @@ function playGame() {
     }
 
 
-    var interval = setInterval(function () {  //generate enter free Aliens
+    var interval2 = setInterval(function () {  //generate enter free Aliens
 
         if (gameOver) {
-            stopGame();
+            return clearInterval(interval2);
         } else {
             freeAliens.push($enter.eq(Math.floor(Math.random() * $enter.length)).addClass('freeAlien'));
 
@@ -335,12 +333,10 @@ function playGame() {
         var $nextHead = direction($(head));
 
 
-        if ($nextHead.hasClass('snake') || $nextHead.length === 0) {
+        if ($nextHead.hasClass('snake') || $nextHead.length === 0) { //GAME OVER
             gameOver = true;
             stopGame();
             gameOverStatement();
-            alert('GAME OVER');
-            $('#playAgain').toggle();
             return;
         }
 
@@ -348,7 +344,6 @@ function playGame() {
             gameOver = true;
             stopGame();
             alert('YOU WIN');
-            $('form#saveScoreForm').toggle();
             addWinnerNameToScores();
             return;
         }
@@ -402,8 +397,8 @@ function playGame() {
             freeAliens[i] = nextStep;
         }
 
-        $('.showGameTime').text(`Time: ${seconds} seconds`)
-
+        $('.showGameTime').text(`Time: ${seconds} seconds`);
+console.log(freeAliens.length);
 
     }, 220);
 
@@ -521,7 +516,8 @@ function playGame() {
 
 
     function addWinnerNameToScores() {
-        $('form#saveScoreForm').on('submit', function (event) {
+        $('#saveScoreForm').toggle();
+        $('div#saveScoreForm form').on('submit', function (event) {
             event.preventDefault();
             var value = $('input').val();
             if (value === '') {
@@ -558,10 +554,16 @@ function playGame() {
             bestScores.splice(5);
 
             localStorage.setItem('BestPartySnake', JSON.stringify(bestScores));
-            $('form#saveScoreForm').toggle();
+            $('#saveScoreForm').toggle();
+            $('#board').toggle();
             $scores.empty();
             bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
             refreshScores();
+            $('.showGameTime').toggle();
+            $('#scoresTopFive').toggle();
+            $('#playAgain').toggle();
+
+
 
         });
     }
@@ -589,12 +591,14 @@ function playGame() {
         return clearInterval(interval);
     };
 
+
     function gameOverStatement() {
-        $('#board').append('<div class="gameOver">' +
-            '<div>GAME OVER</div>' +
-            '<button id="playAgain">Play again</button>' +
-            '</div>').click(function() {
-                $('div.gameOver').empty();
+        $('.gameOver').toggle();
+        $('#playAgainAfterGameOver').click(function() {
+            $('.gameOver').toggle();
+            $board.empty();
+            $('.showGameTime').toggle();
+            playGame();
         });
     };
 
