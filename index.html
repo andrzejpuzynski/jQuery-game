@@ -112,13 +112,17 @@
         }
 
         #scores > table {
-            width: 300px;
+            width: 480px;
             font-size: 2.4em;
             border: none;
             text-align: left;
         }
 
-        #gamerules > p {
+        #scores > table > tr > td:last-child {
+            width: 180px;
+        }
+
+        #gameRules > p {
             max-width: 800px;
             color: white;
             margin-right: auto;
@@ -153,8 +157,9 @@
 
         .gameOver > button,
         #scoresTopFive > button,
+        #gameRules > button,
         #saveScoreForm > form > button {
-            outline:none;
+            outline: none;
             margin-top: 2em;
             color: rgb(250, 175, 24);
             height: 50px;
@@ -166,15 +171,18 @@
 
         .gameOver > button:hover,
         #scoresTopFive > button:hover,
+        #gameRules > button:hover,
         #saveScoreForm > form > button:hover {
             transform: scale(1.02);
         }
 
         form > p,
         form > input {
+            text-align: center;
+            margin-right: auto;
+            margin-left: auto;
             display: block;
             outline: none;
-            text-align: center;
             margin-top: 1em;
             color: white;
             height: 50px;
@@ -206,7 +214,7 @@
 <body>
 <h1>Best Party Snake</h1>
 
-<div id="gamerules">
+<div id="gameRules">
     <h2>Game rules</h2>
     <p>Jesteś imprezowiczem <span class="head test"></span>.</p>
     <p>Poszukujesz w lokalach swoich znajomych <span class="friends test"></span>, by zebrać ich wszystkich i zaprowadzić na najlepszą imprezę do miejsca "Best Party".</p>
@@ -223,7 +231,7 @@
 <div id="saveScoreForm">
     <form >
         <p>Enter your name:</p>
-        <input type="text" value="" autofocus/>
+        <input type="text" value="" maxlength="16" autofocus/>
         <button>Save score</button>
     </form>
 </div>
@@ -245,7 +253,7 @@
     var gameRulesDisplay = localStorage.getItem('BestPartySnakeRules') || true;
     if (gameRulesDisplay === true) {
     $('button#closeGameRules').click(function() {
-        $('div#gamerules').toggle(700);
+        $('div#gameRules').toggle(700);
         $('div#board').toggle();
         gameRulesDisplay = false;
         localStorage.setItem('BestPartySnakeRules', JSON.stringify(gameRulesDisplay));
@@ -253,7 +261,7 @@
     })
     }
     else {
-        $('div#gamerules').toggle();
+        $('div#gameRules').toggle();
         $('div#board').toggle();
         playGame();
     }
@@ -567,7 +575,7 @@ function playGame() {
             event.preventDefault();
             var value = $('input').val();
             if (value === '') {
-                return
+                value ='Player1';
             }
 
             var positionToInsert = 0;
