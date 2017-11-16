@@ -18,7 +18,6 @@
         div,
         div {
             text-align: center;
-            color: rgb(250, 175, 24);
         }
 
         @keyframes titleIn {
@@ -136,11 +135,13 @@
         }
 
         .showGameTime {
+            color: rgb(250, 175, 24);
             display: block;
             font-size: 3em;
         }
 
-        .gameOver {
+        .gameOver,
+        .youWin {
             position: fixed;
             background-color: rgba(0,0,0,0.95);
             padding-top: 30%;
@@ -151,14 +152,29 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .gameOver > div {
-        font-size: 8em;
+
+
+        .gameOver > div#statement {
+            color: red;
+            font-size: 8em;
+        }
+
+        .youWin > div#statement {
+            color: lime;
+            font-size: 8em;
+        }
+
+
+
+        .youWin > #saveScoreForm > form > p {
+            font-size: 2em;
         }
 
         .gameOver > button,
+        .youWin > button,
         #scoresTopFive > button,
         #gameRules > button,
-        #saveScoreForm > form > button {
+        .youWin > #saveScoreForm > form > button {
             outline: none;
             margin-top: 2em;
             color: rgb(250, 175, 24);
@@ -170,9 +186,10 @@
         }
 
         .gameOver > button:hover,
+        .youWin > button:hover,
         #scoresTopFive > button:hover,
         #gameRules > button:hover,
-        #saveScoreForm > form > button:hover {
+        .youWin > #saveScoreForm > form > button:hover {
             transform: scale(1.02);
         }
 
@@ -205,7 +222,8 @@
         #saveScoreForm,
         #scoresTopFive,
         .showGameTime,
-        .gameOver {
+        .gameOver,
+        .youWin {
             display: none;
         }
 
@@ -228,23 +246,26 @@
 <div id="board"></div>
 <div class="showGameTime"></div>
 
-<div id="saveScoreForm">
-    <form >
-        <p>Enter your name:</p>
-        <input type="text" value="" maxlength="16" autofocus/>
-        <button>Save score</button>
-    </form>
-</div>
-
-<div id="scoresTopFive">
-    <h2 id="scoresTitle">Best 5 scores</h2>
-    <div id="scores"></div>
-    <button id="playAgainAfterScores">Play again</button>
-</div>
-
 <div class="gameOver">
-    <div>GAME OVER</div>
+    <div id="statement">GAME OVER</div>
     <button id="playAgainAfterGameOver">Play again</button>
+</div>
+
+<div class="youWin">
+    <div id="statement">YOU WIN</div>
+    <div id="saveScoreForm">
+        <form >
+            <p>Enter your name to save score:</p>
+            <input type="text" value="" maxlength="16" autofocus/>
+            <button>Save score</button>
+        </form>
+    </div>
+    <div id="scoresTopFive">
+        <h2 id="scoresTitle">Best 5 scores</h2>
+        <div id="scores"></div>
+        <!--<button id="playAgainAfterScores">Play again</button>-->
+    </div>
+    <button id="playAgainAfterYouWin">Play again</button>
 </div>
 
 <script src="js/jquery-3.2.1.js"></script>
@@ -397,7 +418,7 @@ function playGame() {
         if ($('.snake.bestparty').length === friends + 1 && partyFriends[0] === 0 && partyFriends[1] === 0 && partyFriends[2] === 0 && partyFriends[3] === 0 && aliens === 0)  {
             gameOver = true;
             stopGame();
-            alert('YOU WIN');
+            youWinStatement();
             addWinnerNameToScores();
             return;
         }
@@ -575,7 +596,7 @@ function playGame() {
             event.preventDefault();
             var value = $('input').val();
             if (value === '') {
-                value ='Player1';
+                value ='Player :)';
             }
 
             var positionToInsert = 0;
@@ -659,6 +680,16 @@ function playGame() {
         $('.gameOver').toggle();
         $('#playAgainAfterGameOver').click(function() {
             $('.gameOver').toggle();
+            $board.empty();
+            $('.showGameTime').toggle();
+            window.location.reload();
+        });
+    };
+
+    function youWinStatement() {
+        $('.youWin').toggle();
+        $('#playAgainAfterYouWin').click(function() {
+            $('.youWin').toggle();
             $board.empty();
             $('.showGameTime').toggle();
             window.location.reload();
