@@ -233,10 +233,8 @@
         zaprowadzić na najlepszą imprezę do miejsca "Best Party".</p>
     <p>Niechcianych imprezowiczów <span class="aliens test"></span>, którzy dołączą do waszej grupy, zaprowadź do lokalu
         z wolnymi miejscami <span class="party test">2</span> i tam ich pozostaw.</p>
-    <p>
-        Wygrywasz, jeśli do miejsca "BestParty" <span class="bestparty test"></span> wejdziesz tylko ze swoimi
-        znajomymi.
-    </p>
+    <p>Wygrywasz, jeśli do miejsca "BestParty" <span class="bestparty test"></span> wejdziesz tylko ze swoimi
+        znajomymi.</p>
     <button id="closeGameRules">Play game</button>
 </div>
 
@@ -284,7 +282,6 @@
         playGame();
     }
 
-
     function playGame() {
 
         var $board = $('#board');
@@ -301,7 +298,6 @@
         var bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
         $scores.empty();
         refreshScores();
-
 
         var aliens = 0; // snake character ---------
         var friends = 0;
@@ -356,25 +352,16 @@
         var direction = moves[40];
 
         $(window).on('keydown', function (event) {  // change direction
-
-            var code = event.keyCode;
-
-            if (code === direction.invalid) {
-                return
-            }
-
-            direction = moves[event.keyCode] || direction
+           var code = event.keyCode;
+           direction = moves[event.keyCode] || direction
         });
 
-
         var scores = [];
-
         var seconds = 0;
 
         if (gameOver !== true) {
             countTime();
         }
-
 
         var interval2 = setInterval(function () {  //generate enter free Aliens
 
@@ -408,7 +395,6 @@
                 gameOver = true;
                 stopGame();
                 gameOverStatement();
-                return;
             }
 
             if ($('.snake.bestparty').length === friends + 1 && partyFriends[0] === 0 && partyFriends[1] === 0 && partyFriends[2] === 0 && partyFriends[3] === 0 && aliens === 0) {
@@ -416,9 +402,7 @@
                 stopGame();
                 youWinStatement();
                 addWinnerNameToScores();
-                return;
             }
-
 
             if (iCanTakeFriendFromAnyParty()) {
                 for (var i = 1; i < 5; i++) {
@@ -471,7 +455,6 @@
             $('.showGameTime').text(`Time: ${seconds} seconds`)
 
         }, 220);
-
 
         //definitions -------------------------
 
@@ -569,22 +552,19 @@
             nextStepFreeAliens.length = 0;
             freeAliens = tempFreeAliens;
             nextStepFreeAliens = tempNextStepFreeAliens;
-
-            return
         }
 
         function countTime() {
-            var three = setInterval(
+            var interval3 = setInterval(
                 function () {
                     if (gameOver) {
                         stopGame();
-                        clearInterval(three);
+                        clearInterval(interval3);
                     } else {
                         seconds++;
                     }
                 }, 1000);
         }
-
 
         function addWinnerNameToScores() {
             $('#saveScoreForm').toggle();
@@ -608,7 +588,6 @@
 
                 setPosition();
 
-
                 if (bestScores.length === 0 || positionToInsert > 3) {
                     bestScores.push({
                         name: value,
@@ -622,24 +601,24 @@
                         }
                     );
                 }
-                bestScores.splice(5);
 
+                bestScores.splice(5);
                 localStorage.setItem('BestPartySnake', JSON.stringify(bestScores));
+
                 $('#saveScoreForm').toggle();
                 $('#board').toggle();
                 $scores.empty();
+
                 bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
                 refreshScores();
+
                 $('.showGameTime').toggle();
                 $('#scoresTopFive').toggle();
                 $('#playAgainAfterScores').click(function () {
                     window.location.reload();
                     $('#scoresTopFive').toggle();
                     $('#board').toggle();
-
-
                     playGame();
-
                 });
 
 
@@ -647,7 +626,6 @@
         }
 
         function refreshScores() {
-
             $scores.append(
                 $('<table>').append(
                     bestScores.map(
@@ -668,7 +646,6 @@
         function stopGame() {
             return clearInterval(interval);
         };
-
 
         function gameOverStatement() {
             $('.gameOver').toggle();
@@ -691,7 +668,6 @@
         };
 
     }
-
 </script>
 </body>
 </html>
