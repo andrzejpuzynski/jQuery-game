@@ -265,7 +265,6 @@
 
 <script src="js/jquery-3.2.1.js"></script>
 <script>
-
     var gameRulesDisplay = localStorage.getItem('BestPartySnakeRules') || true;
     if (gameRulesDisplay === true) {
         $('button#closeGameRules').click(function () {
@@ -283,7 +282,7 @@
     }
 
     function playGame() {
-
+console.log('Start')
         var $board = $('#board');
         var $table = $('<table>');
         var $tr = $('<tr>');
@@ -647,11 +646,12 @@
 
         function gameOverStatement() {
             $('.gameOver').toggle();
-            $('#playAgainAfterGameOver').click(function () {
+            $('#playAgainAfterGameOver').off('click').on('click', function () {
                 $('.gameOver').toggle();
                 $board.empty();
                 $('.showGameTime').toggle();
-                window.location.reload();
+//                window.location.reload();
+              playGame()
             });
         };
 
