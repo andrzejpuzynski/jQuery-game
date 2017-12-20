@@ -15,7 +15,6 @@ else {
 }
 
 function playGame() {
-    console.log('Start')
     var $board = $('#board');
     var $table = $('<table>');
     var $tr = $('<tr>');
@@ -378,9 +377,9 @@ function playGame() {
     };
 
     function gameOverStatement() {
-        $('.gameOver').toggle();
+        $('.gameOver').show();
         $('#playAgainAfterGameOver').off('click').on('click', function () {
-            $('.gameOver').toggle();
+            $('.gameOver').hide();
             $board.empty();
             $('.showGameTime').toggle();
 //                window.location.reload();
@@ -389,12 +388,13 @@ function playGame() {
     };
 
     function youWinStatement() {
-        $('.youWin').toggle();
-        $('#playAgainAfterYouWin').click(function () {
-            $('.youWin').toggle();
+        $('.youWin').show();
+        $('#playAgainAfterYouWin').off('click').on('click', function () {
+            $('.youWin').hide();
             $board.empty();
             $('.showGameTime').toggle();
-            window.location.reload();
+//                window.location.reload();
+            playGame()
         });
     };
 
