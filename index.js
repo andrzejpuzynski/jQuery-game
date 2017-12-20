@@ -1,16 +1,15 @@
 var gameRulesDisplay = localStorage.getItem('BestPartySnakeRules') || true;
 if (gameRulesDisplay === true) {
+    $('div#gameRules').show();
     $('button#closeGameRules').click(function () {
-        $('div#gameRules').toggle(700);
-        $('div#board').toggle();
+        $('div#gameRules').hide(500);
         gameRulesDisplay = false;
         localStorage.setItem('BestPartySnakeRules', JSON.stringify(gameRulesDisplay));
         playGame();
     })
 }
 else {
-    $('div#gameRules').toggle();
-    $('div#board').toggle();
+    $('div#gameRules').hide();
     playGame();
 }
 
@@ -23,7 +22,8 @@ function playGame() {
     createTable(30, 20); // drawing board ---------
     $('td', $table).addClass('cell');
     $board.append($table);
-    $('.showGameTime').toggle();
+    $('#board').show();
+    $('.showGameTime').show();
 
     var $scores = $('#scores');
     var bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
@@ -298,7 +298,8 @@ function playGame() {
     }
 
     function addWinnerNameToScores() {
-        $('#saveScoreForm').toggle();
+        $('#saveScoreForm').show();
+        $('#scoresTopFive').hide();
         $('div#saveScoreForm form').on('submit', function (event) {
             event.preventDefault();
             var value = $('input').val();
@@ -336,19 +337,14 @@ function playGame() {
             bestScores.splice(5);
             localStorage.setItem('BestPartySnake', JSON.stringify(bestScores));
 
-            $('#saveScoreForm').toggle();
-            $('#board').toggle();
+            $('#saveScoreForm').hide();
             $scores.empty();
 
             bestScores = JSON.parse(localStorage.getItem('BestPartySnake')) || [];
             refreshScores();
 
-            $('.showGameTime').toggle();
-            $('#scoresTopFive').toggle();
-            $('#playAgainAfterScores').click(function () {
-                window.location.reload();
-                $('#scoresTopFive').toggle();
-                $('#board').toggle();
+            $('#scoresTopFive').show();
+            $('#playAgainAfterScores').off('click').on('click', function () {
                 playGame();
             });
         });
@@ -381,8 +377,6 @@ function playGame() {
         $('#playAgainAfterGameOver').off('click').on('click', function () {
             $('.gameOver').hide();
             $board.empty();
-            $('.showGameTime').toggle();
-//                window.location.reload();
             playGame()
         });
     };
@@ -392,8 +386,6 @@ function playGame() {
         $('#playAgainAfterYouWin').off('click').on('click', function () {
             $('.youWin').hide();
             $board.empty();
-            $('.showGameTime').toggle();
-//                window.location.reload();
             playGame()
         });
     };
