@@ -136,7 +136,7 @@ div > table {
 .gameOver,
 .youWin {
     position: fixed;
-    background-color: rgba(0, 0, 0, 0.45);
+    background-color: rgba(0, 0, 0, 0.95);
     padding-top: 30%;
     padding-bottom: 50%;
     width: 100%;

@@ -337,6 +337,8 @@ function playGame() {
             bestScores.splice(5);
             localStorage.setItem('BestPartySnake', JSON.stringify(bestScores));
 
+            $('input').val('')
+
             $('#saveScoreForm').hide();
             $scores.empty();
 
